@@ -1,0 +1,83 @@
+[tool.poetry]
+name = "python-sage-meta"
+version = "0.1.0"
+description = "A python package for managing Meta GraphQL API."
+authors = ["radin qahremani <radin@sageteam.org>"]
+readme = "README.md"
+license = "MIT"
+keywords = ["python", "facebook-api", "facebook", "meta", "python-packages"]
+repository = "https://github.com/sageteamorg/python-sage-meta"
+
+classifiers=[
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+
+packages = [
+    { include = "sage_meta" }
+]
+
+[tool.poetry.urls]
+"Documentation" = "https://python-sage-meta.readthedocs.io/en/latest/"
+"Source Code" = "https://github.com/sageteamorg/python-sage-meta"
+"Issues" = "https://github.com/sageteamorg/python-sage-meta/issues"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+facebook-sdk = "^3.1.0"
+requests = "^2.32.3"
+python-dotenv = "^1.0.1"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.11.1"
+pylint = "^3.2.6"
+black = "^24.4.2"
+sphinx = "^8.0.2"
+isort = "^5.13.2"
+commitizen = "^3.28.0"
+pre-commit = "^3.8.0"
+pytest = "^8.3.2"
+pytest-mock = "^3.14.0"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | docs
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_first_party = ["sage_imap"]
+skip = ["docs"]
+
+[tool.mypy]
+mypy_path = "stubs"
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+explicit_package_bases = true
+exclude = '''
+^docs/source/conf.py|
+^build/|
+^tests/|
+^stubs/
+'''
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
