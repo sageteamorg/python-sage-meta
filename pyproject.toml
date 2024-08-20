@@ -25,20 +25,20 @@ packages = [
 "Issues" = "https://github.com/sageteamorg/python-sage-meta/issues"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.8"
 facebook-sdk = "^3.1.0"
 requests = "^2.32.3"
 python-dotenv = "^1.0.1"
-sphinx-rtd-theme = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.11.1"
 pylint = "^3.2.6"
 black = "^24.4.2"
-sphinx = ">=5,<8"
+sphinx = "^6.2.1"
+sphinx-rtd-theme = "^2.0.0"
 isort = "^5.13.2"
 commitizen = "^3.28.0"
-pre-commit = "^3.8.0"
+pre-commit = "^3.5.0"
 pytest = "^8.3.2"
 pytest-mock = "^3.14.0"
 
