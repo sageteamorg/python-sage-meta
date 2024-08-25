@@ -25,7 +25,7 @@ packages = [
 "Issues" = "https://github.com/sageteamorg/python-sage-meta/issues"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8,<4.0"
 facebook-sdk = "^3.1.0"
 requests = "^2.32.3"
 python-dotenv = "^1.0.1"
