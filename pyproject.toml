@@ -49,6 +49,8 @@ pre-commit = "^3.5.0"
 pytest = "^8.3.2"
 pytest-mock = "^3.14.0"
 codecov = "^2.1.13"
+bandit = {extras = ["toml"], version = "^1.7.9"}
+
 
 
 [tool.pytest.ini_options]
@@ -63,6 +65,25 @@ norecursedirs = [
     "dist",
     "build",
 ]
+
+[tool.bandit]
+targets = ["./sage_sms"]
+exclude_dirs = [
+    "tests",
+    "migrations",
+]
+severity = "medium"
+confidence = "medium"
+max_lines = 500
+progress = true
+reports = true
+output_format = "screen"
+output_file = "bandit_report.txt"
+include = ["B101", "B102"]
+exclude_tests = ["B301", "B302"]
+
+[tool.bandit.plugins]
+B104 = { check_typed_list = true }
 
 [tool.black]
 line-length = 88
