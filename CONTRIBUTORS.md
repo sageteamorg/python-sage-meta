@@ -14,6 +14,11 @@ We would like to thank the following people for their contributions to the `pyth
   - Email: radin@sageteam.org
   - Contributions: lead maintainer.
 
+- **Aryan Niknezhad**
+  - GitHub: [ARYAN-NIKNEZHAD](https://github.com/ARYAN-NIKNEZHAD)
+  - Email: aryan513966@gmail.com
+  - Contributors: maintainer
+
 ## Special Thanks
 
 - **Mohammad Fotouhi**
