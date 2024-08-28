@@ -35,6 +35,12 @@ repos:
         args: ["--config-file=pyproject.toml"]
         exclude: (migrations/|tests/|docs/|static/|media/).*
 
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.28.0
+    hooks:
+      - id: commitizen
+        exclude: (migrations/|tests/|docs/|static/|media/).*
+
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.4
     hooks:
