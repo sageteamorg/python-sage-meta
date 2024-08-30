@@ -84,9 +84,7 @@ class FacebookPageData:
     access_token: str
     category_list: List[Category] = field(default_factory=list)
     tasks: List[str] = field(default_factory=list)
-    instagram_business_account: Optional[InstagramAccount] = field(
-        default=None
-    )
+    instagram_business_account: Optional[InstagramAccount] = field(default=None)
     additional_data: Dict[str, Optional[str]] = field(default_factory=dict)
 
 

@@ -1,13 +1,18 @@
-
 from typing import List, Optional, Dict
 
 class InstagramProductTagging:
     def __init__(self, access_token: str) -> None: ...
     def create_tagged_container(
-        self, ig_user_id: str, media_type: str, media_url: str, product_tags: list,
-        caption: Optional[str] = None, user_tags: Optional[List[dict]] = None,
-        thumb_offset: int = 0, location_id: Optional[str] = None,
-        share_to_feed: bool = False
+        self,
+        ig_user_id: str,
+        media_type: str,
+        media_url: str,
+        product_tags: list,
+        caption: Optional[str] = None,
+        user_tags: Optional[List[dict]] = None,
+        thumb_offset: int = 0,
+        location_id: Optional[str] = None,
+        share_to_feed: bool = False,
     ) -> dict: ...
     def publish_media(self, ig_user_id: str, creation_id: str) -> dict: ...
     def get_product_tags(self, media_id: str) -> dict: ...

@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class StoryHandler:
-    def __init__(self, client:"FacebookClient"):
+    def __init__(self, client: "FacebookClient"):
         self.client = client
 
     def get_instagram_stories(self, insta_id: str) -> List[Story]:

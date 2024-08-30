@@ -2,5 +2,9 @@
 
 from .content import ContentPublishing
 from .handlers import (
-    CommentHandler, HashtagHandler, MediaHandler, StoryHandler, AccountHandler
+    CommentHandler,
+    HashtagHandler,
+    MediaHandler,
+    StoryHandler,
+    AccountHandler,
 )
