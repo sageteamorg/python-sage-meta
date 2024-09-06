@@ -8,6 +8,7 @@ from sage_meta.models import Category, FacebookPageData, InstagramAccount
 
 logger = logging.getLogger(__name__)
 
+
 class AccountHandler:
     def __init__(self, client: "FacebookClient"):
         self.client = client
@@ -45,7 +46,8 @@ class AccountHandler:
         additional_data = {
             k: v
             for k, v in account.items()
-            if k not in {"id", "name", "category", "category_list", "tasks", "access_token"}
+            if k
+            not in {"id", "name", "category", "category_list", "tasks", "access_token"}
         }
         page = FacebookPageData(
             id=account["id"],
@@ -72,7 +74,9 @@ class AccountHandler:
             Optional[InstagramAccount]: Instagram business account data or None.
         """
         logger.debug(
-            "Fetching Instagram business account for page ID: %s, Page Name: %s", page.id, page.name
+            "Fetching Instagram business account for page ID: %s, Page Name: %s",
+            page.id,
+            page.name,
         )
         try:
             data = self.client.graph.get_object(
@@ -80,7 +84,7 @@ class AccountHandler:
             )
             if "instagram_business_account" in data:
                 insta_id = data["instagram_business_account"]["id"]
-                self.client.insta_business = insta_id 
+                self.client.insta_business = insta_id
                 logger.debug("Instagram business account ID: %s", insta_id)
                 account_data = self.client.graph.get_object(
                     insta_id,
@@ -100,7 +104,8 @@ class AccountHandler:
                 additional_data = {
                     k: v
                     for k, v in account_data.items()
-                    if k not in {
+                    if k
+                    not in {
                         "id",
                         "username",
                         "follows_count",
@@ -127,7 +132,9 @@ class AccountHandler:
                 )
                 logger.info("Retrieved Instagram account data: %s", account)
                 return account
-            logger.warning("No Instagram business account linked to page ID: %s", page.id)
+            logger.warning(
+                "No Instagram business account linked to page ID: %s", page.id
+            )
             return None
         except facebook.GraphAPIError as e:
             logger.error("Error fetching Instagram business account: %s", e)
@@ -147,7 +154,10 @@ class AccountHandler:
         try:
             response = self._make_request(
                 f"{self.client.graph_url}/{self.client.insta_business}",
-                params={"access_token": self.client.access_token, "fields": "biography,website"}
+                params={
+                    "access_token": self.client.access_token,
+                    "fields": "biography,website",
+                },
             )
             return response.json()
         except requests.RequestException as e:

@@ -1,10 +1,10 @@
 import logging
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
-import requests
-
+from sage_meta.utils import get_request
 
 logger = logging.getLogger(__name__)
+
 
 class HashtagHandler:
     def __init__(self, client: "FacebookClient"):
@@ -27,17 +27,11 @@ class HashtagHandler:
             "q": query,
             "access_token": self.client.access_token,
         }
-        try:
-            response = requests.get(url, params=params)
-            response.raise_for_status()
-            data = response.json()
-            logger.debug(f"Searched hashtag response: {data}")
-            if "data" in data:
-                return data["data"][0]["id"]
-            return None
-        except requests.RequestException as e:
-            logger.error(f"Error searching hashtag: {e}")
-            return None
+        data = get_request(url, params)
+        logger.debug("Searched hashtag response: %s", data)
+        if "data" in data:
+            return data["data"][0]["id"]
+        return None
 
     def get_hashtag_info(self, hashtag_id: str) -> Dict:
         """
@@ -51,13 +45,7 @@ class HashtagHandler:
         """
         url = f"{self.client.graph_url}/{hashtag_id}"
         params = {"access_token": self.client.access_token}
-        try:
-            response = requests.get(url, params=params)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error(f"Error fetching hashtag info: {e}")
-            return {}
+        return get_request(url, params)
 
     def get_recent_media(self, hashtag_id: str, insta_id: str) -> Dict:
         """
@@ -76,13 +64,7 @@ class HashtagHandler:
             "fields": "id,caption,media_type,media_url,permalink",
             "access_token": self.client.access_token,
         }
-        try:
-            response = requests.get(url, params=params)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error(f"Error fetching recent media: {e}")
-            return {}
+        return get_request(url, params)
 
     def get_top_media(self, hashtag_id: str, insta_id: str) -> List[Dict]:
         """
@@ -102,10 +84,5 @@ class HashtagHandler:
             "access_token": self.client.access_token,
             "limit": 10,
         }
-        try:
-            response = requests.get(url, params=params)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error(f"Error fetching top media: {e}")
-            return []
+        data = get_request(url, params)
+        return data.get("data", [])

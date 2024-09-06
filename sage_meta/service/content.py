@@ -1,9 +1,11 @@
 import logging
-import requests
 from typing import List, Optional
+
 import facebook
+import requests
 
 logger = logging.getLogger(__name__)
+
 
 class ContentPublishing:
     """
@@ -71,10 +73,10 @@ class ContentPublishing:
                     "creation_id": media_container_id,
                     "access_token": self.client.access_token,
                 },
-                timeout=10
+                timeout=10,
             )
             publish_data = publish_response.json()
-            logger.info("Video published. Media ID: %s", publish_data.get('id'))
+            logger.info("Video published. Media ID: %s", publish_data.get("id"))
             return publish_data
         except requests.RequestException as e:
             logger.error("Error publishing video: %s", e)
@@ -101,7 +103,7 @@ class ContentPublishing:
                     "caption": caption,
                     "access_token": self.client.access_token,
                 },
-                timeout=10
+                timeout=10,
             )
             create_response.raise_for_status()
             create_data = create_response.json()
@@ -172,7 +174,7 @@ class ContentPublishing:
                     "fields": "status_code,status",
                     "access_token": self.client.access_token,
                 },
-                timeout=10
+                timeout=10,
             )
             status_response.raise_for_status()
             status_data = status_response.json()
@@ -217,7 +219,7 @@ class ContentPublishing:
             response = requests.post(
                 f"{self.client.graph_url}/{comment_id}/replies",
                 data={"message": message, "access_token": self.client.access_token},
-                timeout=10
+                timeout=10,
             )
             response.raise_for_status()
             logger.info("Reply posted: %s", response.json())
@@ -245,7 +247,7 @@ class ContentPublishing:
                     "image_url": image_url,
                     "access_token": self.client.access_token,
                 },
-                timeout=10
+                timeout=10,
             )
             response.raise_for_status()
             response_data = response.json()
@@ -253,8 +255,11 @@ class ContentPublishing:
 
             publish_response = requests.post(
                 f"{self.client.graph_url}/{self.client.insta_business}/media_publish",
-                data={"creation_id": creation_id, "access_token": self.client.access_token},
-                timeout=10
+                data={
+                    "creation_id": creation_id,
+                    "access_token": self.client.access_token,
+                },
+                timeout=10,
             )
             publish_response.raise_for_status()
             logger.info("Story published: %s", publish_response.json())
