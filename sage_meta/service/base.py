@@ -3,14 +3,14 @@ from typing import List, Optional
 
 import facebook
 
-from sage_meta.models import UserData, FacebookPageData
+from sage_meta.models import FacebookPageData, UserData
 from sage_meta.service.content import ContentPublishing
 from sage_meta.service.handlers import (
+    AccountHandler,
     CommentHandler,
     HashtagHandler,
     MediaHandler,
     StoryHandler,
-    AccountHandler,
 )
 
 logger = logging.getLogger(__name__)

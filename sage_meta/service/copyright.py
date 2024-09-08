@@ -1,6 +1,6 @@
 import logging
-import requests
 
+from sage_meta.utils import get_request
 
 logger = logging.getLogger(__name__)
 
@@ -35,13 +35,7 @@ class CopyrightManager:
             "fields": "copyright_check_status",
             "access_token": self.access_token,
         }
-        try:
-            response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error checking copyright status for unpublished video: %s", e)
-            return {"error": str(e)}
+        return get_request(url, params)
 
     def check_copyright_status_published(self, media_id: str) -> dict:
         """
@@ -58,10 +52,4 @@ class CopyrightManager:
             "fields": "copyright_check_information",
             "access_token": self.access_token,
         }
-        try:
-            response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error checking copyright status for published video: %s", e)
-            return {"error": str(e)}
+        return get_request(url, params)

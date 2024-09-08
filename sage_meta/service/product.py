@@ -1,8 +1,7 @@
 import logging
 from typing import List, Optional
 
-import requests
-
+from sage_meta.utils import delete_request, get_request, post_request
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ class InstagramProductTagging:
         self.access_token = access_token
         self.graph_url = "https://graph.facebook.com/v11.0"
 
-    def create_tagged_container(
+    def create_tagged_container(  # pylint: disable=R0913
         self,
         ig_user_id: str,
         media_type: str,
@@ -75,13 +74,7 @@ class InstagramProductTagging:
         if media_type == "REELS":
             params["share_to_feed"] = share_to_feed
 
-        try:
-            response = requests.post(url, data=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error creating tagged container: %s", e)
-            return {"error": str(e)}
+        return post_request(url, params)
 
     def publish_media(self, ig_user_id: str, creation_id: str) -> dict:
         """
@@ -96,13 +89,7 @@ class InstagramProductTagging:
         """
         url = f"{self.graph_url}/{ig_user_id}/media_publish"
         params = {"creation_id": creation_id, "access_token": self.access_token}
-        try:
-            response = requests.post(url, data=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error publishing media: %s", e)
-            return {"error": str(e)}
+        return post_request(url, params)
 
     def get_product_tags(self, media_id: str) -> dict:
         """
@@ -116,13 +103,7 @@ class InstagramProductTagging:
         """
         url = f"{self.graph_url}/{media_id}?fields=product_tags"
         params = {"access_token": self.access_token}
-        try:
-            response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error getting product tags: %s", e)
-            return {"error": str(e)}
+        return get_request(url, params)
 
     def delete_product_tags(self, media_id: str) -> dict:
         """
@@ -136,13 +117,7 @@ class InstagramProductTagging:
         """
         url = f"{self.graph_url}/{media_id}/product_tags"
         params = {"access_token": self.access_token}
-        try:
-            response = requests.delete(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error deleting product tags: %s", e)
-            return {"error": str(e)}
+        return delete_request(url, params)
 
     def update_product_tags(self, media_id: str, product_tags: list) -> dict:
         """
@@ -157,13 +132,7 @@ class InstagramProductTagging:
         """
         url = f"{self.graph_url}/{media_id}/product_tags"
         params = {"product_tags": product_tags, "access_token": self.access_token}
-        try:
-            response = requests.post(url, data=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error updating product tags: %s", e)
-            return {"error": str(e)}
+        return post_request(url, params)
 
     def get_catalogs(self, ig_user_id: str) -> dict:
         """
@@ -177,13 +146,7 @@ class InstagramProductTagging:
         """
         url = f"{self.graph_url}/{ig_user_id}/available_catalogs"
         params = {"access_token": self.access_token}
-        try:
-            response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error getting catalogs: %s", e)
-            return {"error": str(e)}
+        return get_request(url, params)
 
     def get_eligible_products(
         self, ig_user_id: str, catalog_id: str, query: Optional[str] = None
@@ -203,13 +166,7 @@ class InstagramProductTagging:
         params = {"catalog_id": catalog_id, "access_token": self.access_token}
         if query:
             params["q"] = query
-        try:
-            response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error getting eligible products: %s", e)
-            return {"error": str(e)}
+        return get_request(url, params)
 
     def create_catalog(self, business_id: str, catalog_name: str) -> dict:
         """
@@ -224,10 +181,4 @@ class InstagramProductTagging:
         """
         url = f"{self.graph_url}/{business_id}/owned_product_catalogs"
         params = {"name": catalog_name, "access_token": self.access_token}
-        try:
-            response = requests.post(url, data=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException as e:
-            logger.error("Error creating catalog: %s", e)
-            return {"error": str(e)}
+        return post_request(url, params)

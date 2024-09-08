@@ -1,14 +1,16 @@
 import logging
-from typing import List, Optional
+from typing import List, Optional, Type
 
 import requests
 
 from sage_meta.models import Comment, CommentMention, PostMention, ReplyMention
 
 logger = logging.getLogger(__name__)
+FacebookClient = Type
+
 
 class CommentHandler:
-    def __init__(self, client:"FacebookClient"):
+    def __init__(self, client: FacebookClient):
         self.client = client
 
     def get_instagram_comments(self, media_id: str) -> List[Comment]:
@@ -27,7 +29,7 @@ class CommentHandler:
             "access_token": self.client.access_token,
         }
         try:
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, timeout=10)
             response.raise_for_status()
             comments_data = response.json()
 
@@ -35,19 +37,19 @@ class CommentHandler:
                 self._parse_comment_item(comment)
                 for comment in comments_data.get("data", [])
             ]
-            print(f"Retrieved {len(comments_list)} comments.")
+            logger.info("Retrieved %d comments.", len(comments_list))
             return comments_list
         except requests.HTTPError as http_err:
             error_message = (
                 response.json().get("error", {}).get("message", "Unknown error")
             )
             logger.error(
-                f"HTTP error occurred: {http_err}. Error message: {error_message}"
+                "HTTP error occurred: %s. Error message: %s", http_err, error_message
             )
         except requests.RequestException as req_err:
-            logger.error(f"Request exception occurred: {req_err}")
+            logger.error("Request exception occurred: %s", req_err)
         except Exception as e:
-            logger.error(f"An unexpected error occurred: {e}")
+            logger.error("An unexpected error occurred: %s", e)
         return []
 
     def _parse_comment_item(self, comment: dict) -> Comment:
@@ -87,15 +89,16 @@ class CommentHandler:
         """
         url = f"{self.client.graph_url}/{insta_id}"
         params = {
-            "fields": f"mentioned_media.media_id({media_id}){{id,media_type,media_url,caption,comments_count,like_count,timestamp,username,owner}}",
+            "fields": f"mentioned_media.media_id({media_id}){{id,media_type,media_url,caption,"
+            f"comments_count,like_count,timestamp,username,owner}}",
             "access_token": self.client.access_token,
         }
 
-        logger.debug(f"Request URL: {url}")
-        logger.debug(f"Request parameters: {params}")
+        logger.debug("Request URL: %s", url)
+        logger.debug("Request parameters: %s", params)
 
         try:
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, timeout=10)
             response.raise_for_status()
             data = response.json().get("mentioned_media", {})
             if data:
@@ -118,11 +121,13 @@ class CommentHandler:
                 logger.error("User is not mentioned in the caption.")
             else:
                 logger.error(
-                    f"HTTP error occurred: {http_err}. Error message: {error_data.get('message')}"
+                    "HTTP error occurred: %s. Error message: %s",
+                    http_err,
+                    error_data.get("message"),
                 )
             return None
         except requests.RequestException as req_err:
-            logger.error(f"Request exception occurred: {req_err}")
+            logger.error("Request exception occurred: %s", req_err)
             return None
 
     def get_comment_mentions(
@@ -139,15 +144,16 @@ class CommentHandler:
         """
         url = f"{self.client.graph_url}/{insta_id}"
         params = {
-            "fields": f"mentioned_comment.comment_id({comment_id}){{timestamp,like_count,text,username,id}}",
+            "fields": f"mentioned_comment.comment_id({comment_id}){{timestamp,like_count,text,"
+            f"username,id}}",
             "access_token": self.client.access_token,
         }
 
-        logger.debug(f"Request URL: {url}")
-        logger.debug(f"Request parameters: {params}")
+        logger.debug("Request URL: %s", url)
+        logger.debug("Request parameters: %s", params)
 
         try:
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, timeout=10)
             response.raise_for_status()
             data = response.json().get("mentioned_comment", {})
             if data:
@@ -166,11 +172,13 @@ class CommentHandler:
                 logger.error("User is not mentioned in the comment.")
             else:
                 logger.error(
-                    f"HTTP error occurred: {http_err}. Error message: {error_data.get('message')}"
+                    "HTTP error occurred: %s. Error message: %s",
+                    http_err,
+                    error_data.get("message"),
                 )
             return None
         except requests.RequestException as req_err:
-            logger.error(f"Request exception occurred: {req_err}")
+            logger.error("Request exception occurred: %s", req_err)
             return None
 
     def reply_to_mention(
@@ -197,14 +205,14 @@ class CommentHandler:
         if comment_id:
             params["comment_id"] = comment_id
 
-        logger.debug(f"Request URL: {url}")
-        logger.debug(f"Request parameters: {params}")
+        logger.debug("Request URL: %s", url)
+        logger.debug("Request parameters: %s", params)
 
         try:
-            response = requests.post(url, data=params)
+            response = requests.post(url, data=params, timeout=10)
             response.raise_for_status()
             data = response.json()
-            logger.debug(f"Reply to mention response: {data}")
+            logger.debug("Reply to mention response: %s", data)
             return ReplyMention(
                 id=data.get("id"),
                 message=message,
@@ -212,6 +220,9 @@ class CommentHandler:
                 additional_data={},
             )
         except requests.RequestException as e:
-            logger.error(f"Error replying to mention: {e}")
-            logger.debug(f"Response content: {e.response.content}")
+            logger.error("Error replying to mention: %s", e)
+            logger.debug(
+                "Response content: %s",
+                e.response.content if e.response else "No response content",
+            )
             return None

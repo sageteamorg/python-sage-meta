@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class MediaHandler:
-    def __init__(self, client:"FacebookClient"):
+    def __init__(self, client: "FacebookClient"):
         self.client = client
 
     def get_instagram_media(self, insta_id: str) -> List[Media]:
@@ -29,10 +29,10 @@ class MediaHandler:
                 fields="id,caption,media_type,media_url,timestamp,like_count,comments_count",
             )
             media_list = [self._parse_media_item(media) for media in media_data["data"]]
-            logger.info(f"Retrieved {len(media_list)} media items.")
+            logger.info("Retrieved %d media items.", len(media_list))
             return media_list
         except facebook.GraphAPIError as e:
-            logger.error(f"Error fetching Instagram media: {e}")
+            logger.error("Error fetching Instagram media: %s", e)
             return []
 
     def _parse_media_item(self, media: dict) -> Media:
@@ -111,8 +111,9 @@ class MediaHandler:
                                 id=insight["id"],
                             )
                             insights_list.append(insight_item)
-                except facebook.GraphAPIError as e:
+                except facebook.GraphAPIError:
+                    # Handle exception or log error if needed
                     pass
 
-        logger.info(f"Retrieved {len(insights_list)} insights.")
+        logger.info("Retrieved %d insights.", len(insights_list))
         return insights_list
